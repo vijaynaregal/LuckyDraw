@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATHA WHEEL</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <style>
+        .wheel-container {
+            position: relative;
+            width: 350px;
+            height: 350px;
+            margin: auto;
+        }
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 10px solid #333;
+            transition: transform 3s ease-out;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+        }
+        .arrow {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-bottom: 50px solid red;
+        }
+        .button-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-r from-blue-500 to-purple-500 flex flex-col items-center justify-center min-h-screen text-center text-white">
+    <h1 class="text-3xl font-bold mb-6">🎡 ATHA WHEEL 🎉</h1>
+    <div class="wheel-container">
+        <div class="arrow"></div>
+        <canvas id="wheelCanvas" class="wheel"></canvas>
+    </div>
+    <div class="button-container">
+        <button id="spinButton" class="mt-6 bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-6 py-3 rounded-full shadow-lg transition-transform transform hover:scale-110">SPIN NOW</button>
+    </div>
+    <p id="result" class="mt-4 text-xl font-bold"></p>
+
+    <script>
+        const canvas = document.getElementById("wheelCanvas");
+        const ctx = canvas.getContext("2d");
+        const spinButton = document.getElementById("spinButton");
+        const resultText = document.getElementById("result");
+        let hasSpun = false;
+        
+        canvas.width = 350;
+        canvas.height = 350;
+        const prizes = ["10% Off On Purchase", "5% Off On Purchase", "Free Coaster Pair on purchase", "Free Pot Holder On Purchase", "Better Luck Next Time"];
+        let currentRotation = 0;
+        const colors = ["#E63946", "#F4A261", "#2A9D8F", "#264653", "#E9C46A"];
+        
+        function drawWheel() {
+            const numSections = prizes.length;
+            const sectionAngle = (2 * Math.PI) / numSections;
+            for (let i = 0; i < numSections; i++) {
+                ctx.beginPath();
+                ctx.moveTo(175, 175);
+                ctx.arc(175, 175, 175, i * sectionAngle, (i + 1) * sectionAngle);
+                ctx.fillStyle = colors[i];
+                ctx.fill();
+                ctx.stroke();
+                
+                ctx.fillStyle = "white";
+                ctx.font = "bold 16px Arial";
+                ctx.textAlign = "center";
+                ctx.save();
+                ctx.translate(175, 175);
+                ctx.rotate(i * sectionAngle + sectionAngle / 2);
+                ctx.fillText(prizes[i], 110, 10);
+                ctx.restore();
+            }
+        }
+
+        function spinWheel() {
+            if (hasSpun) return;
+            hasSpun = true;
+            spinButton.disabled = true;
+            let randomAngle = Math.floor(Math.random() * 360) + 1800; // 5 full rotations + random
+            currentRotation += randomAngle;
+            canvas.style.transform = `rotate(${currentRotation}deg)`;
+            setTimeout(() => {
+                let prizeIndex = Math.floor(((currentRotation % 360) / 360) * prizes.length);
+                resultText.textContent = "🎁 You won: " + prizes[prizes.length - 1 - prizeIndex] + "!";
+            }, 3000);
+        }
+
+        drawWheel();
+        spinButton.addEventListener("click", spinWheel);
+    </script>
+</body>
+</html>
