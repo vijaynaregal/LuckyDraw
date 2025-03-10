@@ -7,104 +7,96 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
         }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
         }
         input {
             width: 100%;
             padding: 8px;
-            box-sizing: border-box;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
-        .error {
-            color: red;
-            font-size: 0.9em;
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
         }
     </style>
 </head>
 <body>
-    <h1>User Information Form</h1>
-    <form id="userForm">
-        <div class="form-group">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required>
-        </div>
-        <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-            <div id="emailError" class="error"></div>
-        </div>
-        <div class="form-group">
-            <label for="phone">Phone Number:</label>
-            <input type="tel" id="phone" name="phone" required>
-            <div id="phoneError" class="error"></div>
-        </div>
-        <button type="submit">Submit</button>
-    </form>
+    <div class="container">
+        <h2>Enter Your Information</h2>
+        <input type="text" id="name" placeholder="Full Name" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="tel" id="phone" placeholder="Phone Number" required>
+        <button onclick="saveData()">Submit</button>
+        <p id="message"></p>
+    </div>
 
     <script>
-        document.getElementById('userForm').addEventListener('submit', function(event) {
-            event.preventDefault();
+        function validateEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
 
+        function validatePhone(phone) {
+            return /^\d{10}$/.test(phone);
+        }
+
+        function saveData() {
+            const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
             const phone = document.getElementById('phone').value;
-            const emailError = document.getElementById('emailError');
-            const phoneError = document.getElementById('phoneError');
+            const message = document.getElementById('message');
 
-            emailError.textContent = '';
-            phoneError.textContent = '';
-
-            let isValid = true;
-
-            // Validate Email
-            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailPattern.test(email)) {
-                emailError.textContent = 'Please enter a valid email address.';
-                isValid = false;
+            if (!name || !email || !phone) {
+                message.style.color = 'red';
+                message.textContent = 'All fields are required!';
+                return;
+            }
+            if (!validateEmail(email)) {
+                message.style.color = 'red';
+                message.textContent = 'Invalid email format!';
+                return;
+            }
+            if (!validatePhone(phone)) {
+                message.style.color = 'red';
+                message.textContent = 'Phone number must be 10 digits!';
+                return;
             }
 
-            // Validate Phone Number (simple validation for 10 digits)
-            const phonePattern = /^\d{10}$/;
-            if (!phonePattern.test(phone)) {
-                phoneError.textContent = 'Please enter a valid 10-digit phone number.';
-                isValid = false;
-            }
+            const userData = { name, email, phone };
+            const jsonData = JSON.stringify(userData, null, 2);
 
-            if (isValid) {
-                const formData = {
-                    name: document.getElementById('name').value,
-                    email: email,
-                    phone: phone
-                };
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'user_data.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
 
-                sendDataToGoogleSheets(formData);
-            }
-        });
-
-        function sendDataToGoogleSheets(data) {
-            const scriptURL = 'https://script.google.com/macros/library/d/1mqYzTmjz-9bboA2magNLRi0Is5hZOsaIw8F4MwltoYo2Imy_byaCkMnN/4'; // Replace with your Google Apps Script URL
-
-            fetch(scriptURL, {
-                method: 'POST',
-                body: JSON.stringify(data),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.text())
-            .then(response => {
-                alert('Data submitted successfully!');
-                document.getElementById('userForm').reset();
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('There was an error submitting the form.');
-            });
+            message.style.color = 'green';
+            message.textContent = 'Data saved successfully!';
         }
     </script>
 </body>
