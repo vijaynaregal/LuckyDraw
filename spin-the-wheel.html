@@ -36,8 +36,8 @@
         }
     </style>
 </head>
-<body class="bg-gradient-to-r from-blue-500 to-purple-500 flex flex-col items-center justify-center min-h-screen text-center text-white">
-    <h1 class="text-3xl font-bold mb-6">🎡 ATHA WHEEL 🎉</h1>
+<body class="bg-gradient-to-r from-red-700 to-red-900 flex flex-col items-center justify-center min-h-screen text-center text-black">
+    <img src="logo.png" alt="Logo" class="w-1/2 mb-6">
     <div class="wheel-container">
         <div class="arrow"></div>
         <canvas id="wheelCanvas" class="wheel"></canvas>
@@ -45,7 +45,7 @@
     <div class="button-container">
         <button id="spinButton" class="mt-6 bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-6 py-3 rounded-full shadow-lg transition-transform transform hover:scale-110">SPIN NOW</button>
     </div>
-    <p id="result" class="mt-4 text-xl font-bold"></p>
+    <p id="result" class="mt-4 text-xl font-bold text-black"></p>
     <audio id="spinSound" src="https://www.fesliyanstudios.com/play-mp3/4385"></audio>
 
     <script>
@@ -61,7 +61,7 @@
         canvas.height = 400;
         const prizes = ["10% Off", "5% Off", "Free Coaster Pair", "Free Pot Holder", "Better Luck Next Time"];
         let currentRotation = 0;
-        const colors = ["#E63946", "#F4A261", "#2A9D8F", "#264653", "#E9C46A"];
+        const colors = ["#F5F5DC", "#E6D5B8", "#D8C3A5", "#C0A98E", "#B19D86"]; // Beige shades
         
         function drawWheel() {
             const numSections = prizes.length;
@@ -74,7 +74,7 @@
                 ctx.fill();
                 ctx.stroke();
                 
-                ctx.fillStyle = "white";
+                ctx.fillStyle = "black";
                 ctx.font = "bold 14px Arial";
                 ctx.textAlign = "center";
                 ctx.save();
