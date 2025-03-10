@@ -35,6 +35,11 @@
             margin-top: 20px;
         }
     </style>
+    <script>
+        if (performance.navigation.type === 1) {
+            window.location.href = "index.html";
+        }
+    </script>
 </head>
 <body class="bg-gradient-to-r from-red-700 to-red-900 flex flex-col items-center justify-center min-h-screen text-center text-black">
     <img src="logo.png" alt="Logo" class="w-1/2 mb-6">
