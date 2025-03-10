@@ -37,22 +37,41 @@
                 return;
             }
 
-            // Save data to JSONBin
             try {
-                let response = await fetch("https://api.jsonbin.io/v3/b/67ce98418561e97a50e93797", {
+                // Fetch existing data from JSONBin
+                let getResponse = await fetch("https://api.jsonbin.io/v3/b/67cea20e8561e97a50e93cf9", {
+                    method: "GET",
+                    headers: {
+                        "X-Master-Key": "$2a$10$GMDhXzLU2IFWSL3O9zNx8.0eciss1/CTEbWdJW8mhdXT/r5a4jP6C"
+                    }
+                });
+                
+                let data = await getResponse.json();
+                let users = data.record.users || [];
+
+                // Append new user info
+                users.push({ name, email, phone });
+
+                // Save updated data to JSONBin
+                let putResponse = await fetch("https://api.jsonbin.io/v3/b/67cea20e8561e97a50e93cf9", {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                         "X-Master-Key": "$2a$10$GMDhXzLU2IFWSL3O9zNx8.0eciss1/CTEbWdJW8mhdXT/r5a4jP6C"
                     },
-                    body: JSON.stringify({ users: [{ name, email, phone }] })
+                    body: JSON.stringify({ users })
                 });
 
-                if (response.ok) {
-                    message.textContent = "Information saved successfully!";
+                if (putResponse.ok) {
+                    message.textContent = "Information saved successfully! Redirecting to game...";
                     message.classList.remove("text-red-500");
                     message.classList.add("text-green-500");
                     document.getElementById("userForm").reset();
+                    
+                    // Redirect to Spin the Wheel game after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = "spin-the-wheel.html";
+                    }, 2000);
                 } else {
                     message.textContent = "Error saving data.";
                 }
