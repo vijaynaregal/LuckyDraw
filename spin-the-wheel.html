@@ -8,8 +8,8 @@
     <style>
         .wheel-container {
             position: relative;
-            width: 350px;
-            height: 350px;
+            width: 400px;
+            height: 400px;
             margin: auto;
         }
         .wheel {
@@ -22,14 +22,14 @@
         }
         .arrow {
             position: absolute;
-            top: -25px;
+            bottom: -25px;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translateX(-50%) rotate(180deg);
             width: 0;
             height: 0;
             border-left: 25px solid transparent;
             border-right: 25px solid transparent;
-            border-bottom: 50px solid red;
+            border-top: 50px solid red;
         }
         .button-container {
             margin-top: 20px;
@@ -46,17 +46,20 @@
         <button id="spinButton" class="mt-6 bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-6 py-3 rounded-full shadow-lg transition-transform transform hover:scale-110">SPIN NOW</button>
     </div>
     <p id="result" class="mt-4 text-xl font-bold"></p>
+    <audio id="spinSound" src="https://www.fesliyanstudios.com/play-mp3/4385"></audio>
 
     <script>
         const canvas = document.getElementById("wheelCanvas");
         const ctx = canvas.getContext("2d");
         const spinButton = document.getElementById("spinButton");
         const resultText = document.getElementById("result");
-        let hasSpun = false;
+        const spinSound = document.getElementById("spinSound");
+        let spinsLeft = 2;
+        let isCooldown = false;
         
-        canvas.width = 350;
-        canvas.height = 350;
-        const prizes = ["10% Off On Purchase", "5% Off On Purchase", "Free Coaster Pair on purchase", "Free Pot Holder On Purchase", "Better Luck Next Time"];
+        canvas.width = 400;
+        canvas.height = 400;
+        const prizes = ["10% Off", "5% Off", "Free Coaster Pair", "Free Pot Holder", "Better Luck Next Time"];
         let currentRotation = 0;
         const colors = ["#E63946", "#F4A261", "#2A9D8F", "#264653", "#E9C46A"];
         
@@ -65,33 +68,48 @@
             const sectionAngle = (2 * Math.PI) / numSections;
             for (let i = 0; i < numSections; i++) {
                 ctx.beginPath();
-                ctx.moveTo(175, 175);
-                ctx.arc(175, 175, 175, i * sectionAngle, (i + 1) * sectionAngle);
+                ctx.moveTo(200, 200);
+                ctx.arc(200, 200, 200, i * sectionAngle, (i + 1) * sectionAngle);
                 ctx.fillStyle = colors[i];
                 ctx.fill();
                 ctx.stroke();
                 
                 ctx.fillStyle = "white";
-                ctx.font = "bold 16px Arial";
+                ctx.font = "bold 14px Arial";
                 ctx.textAlign = "center";
                 ctx.save();
-                ctx.translate(175, 175);
+                ctx.translate(200, 200);
                 ctx.rotate(i * sectionAngle + sectionAngle / 2);
-                ctx.fillText(prizes[i], 110, 10);
+                ctx.fillText(prizes[i], 120, 10);
                 ctx.restore();
             }
         }
 
         function spinWheel() {
-            if (hasSpun) return;
-            hasSpun = true;
+            if (spinsLeft <= 0 || isCooldown) return;
+            spinsLeft--;
             spinButton.disabled = true;
+            spinSound.play();
             let randomAngle = Math.floor(Math.random() * 360) + 1800; // 5 full rotations + random
             currentRotation += randomAngle;
+            canvas.style.transition = "transform 3s ease-out";
             canvas.style.transform = `rotate(${currentRotation}deg)`;
+            
             setTimeout(() => {
-                let prizeIndex = Math.floor(((currentRotation % 360) / 360) * prizes.length);
-                resultText.textContent = "🎁 You won: " + prizes[prizes.length - 1 - prizeIndex] + "!";
+                let normalizedRotation = (currentRotation % 360 + 360) % 360;
+                let sectionAngle = 360 / prizes.length;
+                let prizeIndex = Math.floor((normalizedRotation + sectionAngle / 2) / sectionAngle) % prizes.length;
+                resultText.textContent = "🎁 Show this to claim your prize !";
+                
+                if (spinsLeft > 0) {
+                    isCooldown = true;
+                    resultText.textContent += "\n⏳";
+                    setTimeout(() => {
+                        isCooldown = false;
+                        spinButton.disabled = false;
+                        resultText.textContent = "🎡 Ready to spin again!";
+                    }, 30000); // 30 seconds cooldown
+                }
             }, 3000);
         }
 
