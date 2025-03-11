@@ -38,12 +38,12 @@
         }
     </style>
     <script>
-        if (!document.referrer || !document.referrer.includes("index.html")) {
+        if (!document.referrer || !document.referrer.includes("index.html") || performance.navigation.type === 1) {
             window.location.href = "index.html";
         }
     </script>
 </head>
-<body class="bg-gradient-to-r from-red-700 to-red-900 flex flex-col items-center justify-center min-h-screen text-center text-black p-4">
+<body class="bg-white flex flex-col items-center justify-center min-h-screen text-center text-black p-4">
     <img src="logo.png" alt="Logo" class="w-3/4 max-w-xs mb-6">
     <div class="wheel-container">
         <div class="arrow"></div>
