@@ -7,23 +7,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
 
     <script>
-        let sessionTimeout;
-
-        function resetSessionTimer() {
-            clearTimeout(sessionTimeout);
-            sessionTimeout = setTimeout(() => {
-                alert("Session expired! Redirecting to home...");
-                window.location.href = "index.html"; // Redirects to index.html after timeout
-            }, 30000); // 30 seconds
-        }
-
-        document.addEventListener("mousemove", resetSessionTimer);
-        document.addEventListener("keypress", resetSessionTimer);
-        document.addEventListener("click", resetSessionTimer);
-        document.addEventListener("scroll", resetSessionTimer);
-
-        window.onload = resetSessionTimer; // Start timer when page loads
+    sessionStorage.setItem("authorized", "true");
+    window.location.href = "protected.html"; // Redirect to the protected page
     </script>
+
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
     <div class="bg-white p-6 rounded-2xl shadow-xl max-w-md w-full text-center">
