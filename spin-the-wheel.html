@@ -38,6 +38,15 @@
         }
     </style>
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Check if session storage has a valid entry
+            if (!sessionStorage.getItem("authorized")) {
+                window.location.href = "index.html";
+            }
+        });
+    </script>
+    
+    <script>
     document.addEventListener("DOMContentLoaded", function () {
         const navigationEntries = window.performance.getEntriesByType("navigation");
         const isReloaded = navigationEntries.length > 0 && navigationEntries[0].type === "reload";
