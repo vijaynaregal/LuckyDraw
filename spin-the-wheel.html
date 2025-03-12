@@ -36,6 +36,18 @@
         .button-container {
             margin-top: 20px;
         }
+        .instagram-logo {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .instagram-logo img {
+            width: 24px;
+            height: 24px;
+        }
     </style>
     
     <script>
@@ -48,10 +60,10 @@
             window.location.href = "index.html";  
         }
     });
-</script>
-
+    </script>
 </head>
-<body class="bg-white flex flex-col items-center justify-center min-h-screen text-center text-black p-4">
+<body class="bg-white flex flex-col items-center justify-center min-h-screen text-center text-black p-4 relative">
+    
     <img src="logo.png" alt="Logo" class="w-3/4 max-w-xs mb-6">
     <div class="wheel-container">
         <div class="arrow"></div>
@@ -62,7 +74,12 @@
     </div>
     <p id="result" class="mt-4 text-lg font-bold text-black"></p>
     <audio id="spinSound" src="https://www.fesliyanstudios.com/play-mp3/4385"></audio>
-
+    
+    <a href="https://www.instagram.com/athadecorindia" target="_blank" class="instagram-logo">
+        <img src="instagram-logo.png" alt="Instagram">
+        Follow us on Instagram
+    </a>
+    
     <script>
         const canvas = document.getElementById("wheelCanvas");
         const ctx = canvas.getContext("2d");
@@ -76,7 +93,7 @@
         canvas.height = 400;
         const prizes = ["10% Off", "5% Off", "Free Coaster Pair", "Free Pot Holder", "Better Luck Next Time"];
         let currentRotation = 0;
-        const colors = ["#F5F5DC", "#E6D5B8", "#D8C3A5", "#C0A98E", "#B19D86"]; // Beige shades
+        const colors = ["#F5F5DC", "#E6D5B8", "#D8C3A5", "#C0A98E", "#B19D86"];
         
         function drawWheel() {
             const numSections = prizes.length;
@@ -105,7 +122,7 @@
             spinsLeft--;
             spinButton.disabled = true;
             spinSound.play();
-            let randomAngle = Math.floor(Math.random() * 360) + 1800; // 5 full rotations + random
+            let randomAngle = Math.floor(Math.random() * 360) + 1800;
             currentRotation += randomAngle;
             canvas.style.transition = "transform 3s ease-out";
             canvas.style.transform = `rotate(${currentRotation}deg)`;
@@ -123,7 +140,7 @@
                         isCooldown = false;
                         spinButton.disabled = false;
                         resultText.textContent = "🎡 Ready to spin again!";
-                    }, 30000); // 30 seconds cooldown
+                    }, 30000);
                 }
             }, 3000);
         }
