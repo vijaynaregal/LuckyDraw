@@ -51,15 +51,16 @@
     </style>
     
     <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const navigationEntries = window.performance.getEntriesByType("navigation");
-        const isReloaded = navigationEntries.length > 0 && navigationEntries[0].type === "reload";
+        document.addEventListener("DOMContentLoaded", function () {
+            if (window.performance && performance.getEntriesByType("navigation")[0]?.type === "reload") {
+                return; // Prevent redirect loop on reload
+            }
 
-        if (isReloaded || sessionStorage.getItem("visited") !== "true") {
-            sessionStorage.setItem("visited", "true");  // Store flag in sessionStorage
-            window.location.href = "index.html";  
-        }
-    });
+            if (!sessionStorage.getItem("visited")) {
+                sessionStorage.setItem("visited", "true");  
+                window.location.href = "index.html";  
+            }
+        });
     </script>
 </head>
 <body class="bg-white flex flex-col items-center justify-center min-h-screen text-center text-black p-4 relative">
