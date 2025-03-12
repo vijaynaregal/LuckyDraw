@@ -49,17 +49,10 @@
             height: 24px;
         }
     </style>
-    
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            if (window.performance && performance.getEntriesByType("navigation")[0]?.type === "reload") {
-                return; // Prevent redirect loop on reload
-            }
-
-            if (!sessionStorage.getItem("visited")) {
-                sessionStorage.setItem("visited", "true");  
-                window.location.href = "index.html";  
-            }
+        window.addEventListener("beforeunload", function (event) {
+            event.preventDefault();
+            window.location.href = "index.html";
         });
     </script>
 </head>
