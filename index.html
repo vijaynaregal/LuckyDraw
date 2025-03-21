@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Information Form</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
-
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
     <div class="bg-white p-6 rounded-2xl shadow-xl max-w-md w-full text-center">
@@ -58,11 +57,14 @@
                 message.textContent = "Already registered!";
                 message.classList.remove("text-green-500");
                 message.classList.add("text-red-500");
-                return; // **Stops further execution (No redirect)**
+                return;
             }
 
-            // Append new user info
-            users.push({ name, email, phone });
+            // Append new user info with IST timestamp
+            let now = new Date();
+            let istOffset = 5.5 * 60 * 60 * 1000; // IST offset in milliseconds
+            let istTime = new Date(now.getTime() + istOffset).toISOString().replace('T', ' ').substring(0, 19);
+            users.push({ name, email, phone, timestamp: istTime + " IST" });
 
             // Save updated data to JSONBin
             let putResponse = await fetch("https://api.jsonbin.io/v3/b/67cea20e8561e97a50e93cf9", {
@@ -91,7 +93,6 @@
             message.textContent = "Error connecting to the server.";
         }
     });
-</script>
-
+    </script>
 </body>
 </html>
